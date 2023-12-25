@@ -1,0 +1,13 @@
+{
+    "name": "com.bgs.birdscript",
+    "version": "0.0.1",
+    "displayName": "BirdScript Interpreter",
+    "description": "The interpreter for Thirsty Bird custom charts.",
+    "unity": "2022.3",
+    "unityRelease": "0f1",
+    "author": {
+      "name": "Ben Sulzinsky",
+      "url": "https://bgsulz.com"
+    }
+  }
+  
