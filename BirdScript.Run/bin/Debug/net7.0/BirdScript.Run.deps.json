@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v7.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v7.0": {
+      "BirdScript.Run/1.0.0": {
+        "dependencies": {
+          "BirdScript": "1.0.0"
+        },
+        "runtime": {
+          "BirdScript.Run.dll": {}
+        }
+      },
+      "BirdScript/1.0.0": {
+        "runtime": {
+          "BirdScript.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BirdScript.Run/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "BirdScript/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
