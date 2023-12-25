@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using BirdScript.Tokenizer;
 
@@ -44,7 +46,9 @@ namespace BirdScript.Instructionizer
         protected abstract string InfoString();
         protected virtual string TimingString() => $"On {ActivateBeat}";
 
-        public sealed override string ToString() => InfoString() + (_hasProcessed ? (" | " + TimingString()) : "");
+        public static string TimedString(string info, string timing, bool hasProcessed) 
+            => info + (hasProcessed ? (" | " + timing) : "");
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
 
         public int CompareTo(TimedInstruction? other)
         {
@@ -61,6 +65,7 @@ namespace BirdScript.Instructionizer
         protected override int Priority => -3;
 
         protected override string InfoString() => $"BPM: {Value}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record AlignInstruction(float Moment) : TimedInstruction
@@ -68,6 +73,7 @@ namespace BirdScript.Instructionizer
         protected override int Priority => -2;
 
         protected override string InfoString() => $"Align: {Moment}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record StartInstruction(Command Type) : TimedInstruction, ICommandInstruction
@@ -75,6 +81,7 @@ namespace BirdScript.Instructionizer
         protected override int Priority => -1;
 
         protected override string InfoString() => $"Start: {Type}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record EndInstruction(Command Type) : TimedInstruction, ICommandInstruction
@@ -82,6 +89,7 @@ namespace BirdScript.Instructionizer
         protected override int Priority => 2;
 
         protected override string InfoString() => $"End: {Type}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record WaitInstruction(float Duration) : TimedInstruction
@@ -98,6 +106,7 @@ namespace BirdScript.Instructionizer
 
         protected override string InfoString() => $"Wait: {Duration}";
         protected override string TimingString() => $"From {ActivateBeat} to {EndBeat}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record DropInstruction(Command Type, int X, int Y) : TimedInstruction, ICommandInstruction
@@ -114,6 +123,7 @@ namespace BirdScript.Instructionizer
 
         protected override string InfoString() => $"{Type}: {X}, {Y}";
         protected sealed override string TimingString() => $"Cue {ActivateBeat}, drop {DropBeat}, land {LandBeat}";
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 
     public record GemInstruction(int X, int Y) : DropInstruction(Command.Gem, X, Y), IBufferableInstruction
@@ -129,5 +139,7 @@ namespace BirdScript.Instructionizer
             LandBeat = end + (ActivateBeat - start);
             DropBeat = LandBeat - 1;
         }
+
+        public override string ToString() => TimedString(InfoString(), TimingString(), _hasProcessed);
     }
 }
