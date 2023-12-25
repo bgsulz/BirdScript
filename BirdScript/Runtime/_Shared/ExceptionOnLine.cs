@@ -1,3 +1,5 @@
+using System;
+
 namespace BirdScript.Errors
 {
     [Serializable]

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using BirdScript.Tokenizer;
 
 namespace BirdScript.Errors

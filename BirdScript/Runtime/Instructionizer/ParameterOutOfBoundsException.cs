@@ -1,3 +1,4 @@
+using System;
 using BirdScript.Tokenizer;
 
 namespace BirdScript.Errors

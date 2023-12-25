@@ -1,5 +1,7 @@
 #pragma warning disable CS8601
 
+using System;
+using System.Collections.Generic;
 using BirdScript.Errors;
 using BirdScript.Tokenizer;
 

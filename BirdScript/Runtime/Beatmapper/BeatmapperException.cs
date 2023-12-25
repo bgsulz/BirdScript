@@ -1,3 +1,4 @@
+using System;
 using BirdScript.Errors;
 
 namespace BirdScript.Beatmapper
