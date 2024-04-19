@@ -1,5 +1,5 @@
 using System;
-using BirdScript.Tokenizer;
+using BirdScript.Tokenizing;
 
 namespace BirdScript.Errors
 {

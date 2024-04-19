@@ -3,9 +3,9 @@
 using System;
 using System.Collections.Generic;
 using BirdScript.Errors;
-using BirdScript.Tokenizer;
+using BirdScript.Tokenizing;
 
-namespace BirdScript.Instructionizer
+namespace BirdScript.Instructionizing
 {
     public static class ArgumentValidator
     {
@@ -33,6 +33,16 @@ namespace BirdScript.Instructionizer
             return true;
         }
 
+        public static bool MatchAll<T>(this List<IToken> self, out T[] res)
+        {
+            res = new T[self.Count];
+            for (int i = 0; i < self.Count; i++)
+            {
+                if (!self[i].TryConvert(out res[i])) return false;
+            }
+            return true;
+        }
+
         public static bool TryConvert<T>(this IToken token, out T res)
         {
             if (token is InfoToken<T> t)
@@ -51,13 +61,15 @@ namespace BirdScript.Instructionizer
             return false;
         }
 
-        public static bool ValidateBounds(InfoToken<Command> head, params int[] coordinates)
+        public static bool ValidateBounds(InfoToken<Command> head, params int[] coordinates) => ValidateBounds(head, 0, 8, coordinates);
+
+        public static bool ValidateBounds(InfoToken<Command> head, int min, int max, params int[] coordinates)
         {
             for (int i = 0; i < coordinates.Length; i++)
             {
                 var item = coordinates[i];
-                if (item < 0 || item > 8)
-                    throw new ParameterOutOfBoundsException(i, head.Value, item, 0, 8, head.Line);
+                if (item < min || item > max)
+                    throw new ParameterOutOfBoundsException(i, head.Value, item, min, max, head.Line);
 
             }
             return true;

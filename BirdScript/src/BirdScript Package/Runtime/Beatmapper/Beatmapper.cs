@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using BirdScript.Instructionizer;
-using BirdScript.Tokenizer;
+using BirdScript.Tokenizing;
+using BirdScript.Instructionizing;
 
-namespace BirdScript.Beatmapper
+namespace BirdScript.Beatmapping
 {
     public class Beatmapper
     {
@@ -27,6 +27,7 @@ namespace BirdScript.Beatmapper
         {
             AssignActivateBeats();
             AssignBufferBeats();
+            PostProcess();
 
             return _processed;
         }
@@ -45,9 +46,11 @@ namespace BirdScript.Beatmapper
 
                             if (timed is WaitInstruction wait)
                                 _beat += wait.Duration;
-
-                            int insertIndex = _processed.BinarySearch(timed);
-                            _processed.Insert(insertIndex < 0 ? ~insertIndex : insertIndex, timed);
+                            else
+                            {
+                                int insertIndex = _processed.BinarySearch(timed);
+                                _processed.Insert(insertIndex < 0 ? ~insertIndex : insertIndex, timed);
+                            }
 
                             break;
                         }
@@ -55,9 +58,14 @@ namespace BirdScript.Beatmapper
                         _beat = jump.Beat;
                         break;
                     default:
-                        throw new BeatmapperException($"How did an {instruction.GetType()} get in here?", instruction.Line);
+                        throw new BeatmapperException($"How did a {instruction.GetType()} get in here?", instruction.Line);
                 }
             }
+
+            var stop = new EndOfChartInstruction();
+            stop.BeatmapFromActivation(_beat);
+
+            _processed.Add(stop);
         }
 
         private void AssignBufferBeats()
@@ -69,8 +77,8 @@ namespace BirdScript.Beatmapper
                     case StartInstruction start:
                         if (_commandToBuffer.ContainsKey(start.Type))
                             throw new BeatmapperException(
-                                $"Attemped to open buffer of type {start.Type}; " 
-                                + $"one is already open on line {_commandToBuffer[start.Type].StartInstruction.Line}", 
+                                $"Attemped to open buffer of type {start.Type}; "
+                                + $"one is already open on line {_commandToBuffer[start.Type].StartInstruction.Line}",
                                 start.Line);
 
                         _commandToBuffer[start.Type] = new(start);
@@ -78,7 +86,7 @@ namespace BirdScript.Beatmapper
                     case EndInstruction end:
                         if (!_commandToBuffer.TryGetValue(end.Type, out var buffer))
                             throw new BeatmapperException(
-                                $"Attempted to close buffer of type {end.Type}; none is open", 
+                                $"Attempted to close buffer of type {end.Type}; none is open",
                                 end.Line);
 
                         foreach (var item in buffer.Instructions)
@@ -99,11 +107,39 @@ namespace BirdScript.Beatmapper
             {
                 var unclosedBuffer = _commandToBuffer.First();
                 throw new BeatmapperException(
-                    $"Unclosed buffer of type {unclosedBuffer.Key}", 
+                    $"Unclosed buffer of type {unclosedBuffer.Key}",
                     unclosedBuffer.Value.StartInstruction.Line);
                 // TODO: Instructions should have lines for error passthrough.
                 // Do with abstract base class?
             }
+        }
+
+        private void PostProcess()
+        {
+            // TODO: How to handle BPM and alignment?
+            if (!_processed.Any(x => x is BPMInstruction))
+                throw new BeatmapperException("No BPM command in chart.", 0);
+            if (!_processed.Any(x => x is AlignInstruction))
+                throw new BeatmapperException("No Align command in chart.", 0);
+
+            // Fix BPM -- not necessary?
+            // if (_processed.First() is not BPMInstruction)
+            // {
+            //     var firstTimed = _processed.First(x => x is TimedInstruction);
+            //     var firstBeat = firstTimed.ActivateBeat;
+
+            //     var firstBPM = _processed.FirstOrDefault(x => x is BPMInstruction) as BPMInstruction;
+
+            //     if (firstBPM == null)
+            //     {
+            //         throw new BeatmapperException("No BPM instruction in chart.", 0);
+            //     }
+            //     else
+            //     {
+            //         var insertion = new BPMInstruction(firstBPM.Value) { ActivateBeat = firstBeat };
+            //         _processed.Insert(0, insertion);
+            //     }
+            // }
         }
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using BirdScript.Errors;
 
-namespace BirdScript.Beatmapper
+namespace BirdScript.Beatmapping
 {
     [Serializable]
     internal class BeatmapperException : ExceptionOnLine

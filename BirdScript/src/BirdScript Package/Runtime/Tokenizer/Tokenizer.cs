@@ -3,7 +3,7 @@ using System.Data;
 using System.Linq;
 using BirdScript.Errors;
 
-namespace BirdScript.Tokenizer
+namespace BirdScript.Tokenizing
 {
     public class Tokenizer
     {
@@ -93,8 +93,8 @@ namespace BirdScript.Tokenizer
             var value = _source[_brace.._scan];
             if (Enum.TryParse<Command>(value, true, out var command))
                 _tokens.Add(new InfoToken<Command>(TokenType.Command, _line, command));
-            else if (Enum.TryParse<Keyword>(value, true, out var keyword))
-                _tokens.Add(new InfoToken<Keyword>(TokenType.Keyword, _line, keyword));
+            else if (Enum.TryParse<RowColumn>(value, true, out var keyword))
+                _tokens.Add(new InfoToken<RowColumn>(TokenType.Keyword, _line, keyword));
             else
                 _tokens.Add(new InfoToken<string>(TokenType.Identifier, _line, value));
         }

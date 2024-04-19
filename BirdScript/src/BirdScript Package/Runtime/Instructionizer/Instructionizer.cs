@@ -1,8 +1,8 @@
-using BirdScript.Tokenizer;
+using BirdScript.Tokenizing;
 using BirdScript.Errors;
 using System.Collections.Generic;
 
-namespace BirdScript.Instructionizer
+namespace BirdScript.Instructionizing
 {
     public class Instructionizer
     {

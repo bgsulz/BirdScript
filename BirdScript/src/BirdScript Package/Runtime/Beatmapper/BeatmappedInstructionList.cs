@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using BirdScript.Instructionizer;
+using BirdScript.Instructionizing;
 
-namespace BirdScript.Beatmapper
+namespace BirdScript.Beatmapping
 {
     public class BeatmappedInstructionList : List<TimedInstruction>
     {

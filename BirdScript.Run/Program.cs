@@ -1,6 +1,6 @@
-﻿using BirdScript.Instructionizer;
-using BirdScript.Beatmapper;
-using BirdScript.Tokenizer;
+﻿using BirdScript.Instructionizing;
+using BirdScript.Beatmapping;
+using BirdScript.Tokenizing;
 using System.Diagnostics;
 
 string path;

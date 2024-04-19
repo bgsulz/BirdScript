@@ -1,4 +1,4 @@
-namespace BirdScript.Tokenizer
+namespace BirdScript.Tokenizing
 {
     public enum Command
     {
@@ -13,10 +13,11 @@ namespace BirdScript.Tokenizer
         Bolt,
         Boulder,
         Gem,
-        Ghost
+        Ghost,
+        Ball
     }
 
-    public enum Keyword
+    public enum RowColumn
     {
         Row,
         Column

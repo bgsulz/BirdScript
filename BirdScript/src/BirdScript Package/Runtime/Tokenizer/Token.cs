@@ -1,4 +1,4 @@
-namespace BirdScript.Tokenizer
+namespace BirdScript.Tokenizing
 {
     public interface IToken
     {
