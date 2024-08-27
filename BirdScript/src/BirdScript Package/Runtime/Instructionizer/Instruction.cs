@@ -26,6 +26,8 @@ namespace BirdScript.Instructionizing
         public int Line { get; init; } = -1;
     }
 
+    public abstract record Metadata : Instruction { }
+
     public record JumpInstruction(float Beat) : Instruction
     {
         public override string ToString() => $"Jump: {Beat}";
@@ -189,4 +191,7 @@ namespace BirdScript.Instructionizing
         protected sealed override string TimingString() => $"Cue {ActivateBeat}, drop {DropBeat}, land {LandBeat}";
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
+
+    public record AuthorMetadata(string Author) : Metadata;
+    public record TitleMetadata(string Title) : Metadata;
 }

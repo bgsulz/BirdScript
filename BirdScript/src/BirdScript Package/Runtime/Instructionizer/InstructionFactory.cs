@@ -24,7 +24,9 @@ namespace BirdScript.Instructionizing
             [Command.Gem] = GemCreator,
             [Command.Jump] = JumpCreator,
             [Command.Start] = StartCreator,
-            [Command.End] = EndCreator
+            [Command.End] = EndCreator,
+            [Command.By] = AuthorMetadataCreator,
+            [Command.Title] = TitleMetadataCreator,
         };
 
         private static IInstruction BPMCreator(InfoToken<Command> head, List<IToken> arguments)
@@ -122,6 +124,20 @@ namespace BirdScript.Instructionizing
                     return new BallInstruction(coords) { Line = head.Line };
                 }
             }
+            throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction AuthorMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            if (arguments.Match<string>(out var str))
+                return new AuthorMetadata(str) { Line = head.Line };
+            throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction TitleMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            if (arguments.Match<string>(out var str))
+                return new TitleMetadata(str) { Line = head.Line };
             throw new ParameterException(head, arguments);
         }
 

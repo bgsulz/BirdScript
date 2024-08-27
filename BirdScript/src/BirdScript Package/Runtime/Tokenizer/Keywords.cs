@@ -2,19 +2,20 @@ namespace BirdScript.Tokenizing
 {
     public enum Command
     {
-        Wait,
-        Jump,
-        BPM,
-        Align,
-        Start,
-        End,
-        Water,
-        Rock,
-        Bolt,
-        Boulder,
-        Gem,
-        Ghost,
-        Ball
+        // Timing
+        Wait, Jump, BPM, Align,
+
+        // Buffers
+        Start, End,
+
+        // Items
+        Water, Rock, Bolt, Boulder, Gem, Ghost, Ball, Energy, Toxin, Nectar,
+        // Energy: totem good, bird bad
+        // Toxin: swap controls
+        // Nectar: hold notes
+
+        // Metadata
+        By, Title
     }
 
     public enum RowColumn

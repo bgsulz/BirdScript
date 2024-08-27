@@ -40,6 +40,9 @@ namespace BirdScript.Beatmapping
             {
                 switch (instruction)
                 {
+                    case Metadata data:
+                        _processed.Data.Add(data);
+                        break;
                     case TimedInstruction timed:
                         {
                             timed.BeatmapFromActivation(_beat);
