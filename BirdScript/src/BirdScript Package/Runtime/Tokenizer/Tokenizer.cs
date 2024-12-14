@@ -10,8 +10,8 @@ namespace BirdScript.Tokenizing
         private readonly DataTable table = new();
 
         private int _brace, _scan, _line;
-        private TokenList _tokens = new();
-        private string _source;
+        private readonly TokenList _tokens = new();
+        private readonly string _source;
 
         public Tokenizer(string source) => _source = source;
 

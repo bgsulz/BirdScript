@@ -13,10 +13,10 @@ namespace BirdScript.Beatmapping
         }
 
         private float _beat;
-        private InstructionList _source;
-        private BeatmappedInstructionList _processed = new();
+        private readonly InstructionList _source;
+        private readonly BeatmappedInstructionList _processed = new();
 
-        private Dictionary<Command, Buffer> _commandToBuffer = new();
+        private readonly Dictionary<Command, Buffer> _commandToBuffer = new();
 
         public Beatmapper(InstructionList source)
         {
@@ -69,6 +69,7 @@ namespace BirdScript.Beatmapping
             stop.BeatmapFromActivation(_beat);
 
             _processed.Add(stop);
+            _processed.Data.ClearCache();
         }
 
         private void AssignBufferBeats()
@@ -78,22 +79,22 @@ namespace BirdScript.Beatmapping
                 switch (instruction)
                 {
                     case StartInstruction start:
-                        if (_commandToBuffer.ContainsKey(start.Type))
+                        if (_commandToBuffer.TryGetValue(start.Type, out var bufferStart))
                             throw new BeatmapperException(
                                 $"Attemped to open buffer of type {start.Type}; "
-                                + $"one is already open on line {_commandToBuffer[start.Type].StartInstruction.Line}",
+                                + $"one is already open from line {bufferStart.StartInstruction.Line}",
                                 start.Line);
 
                         _commandToBuffer[start.Type] = new(start);
                         break;
                     case EndInstruction end:
-                        if (!_commandToBuffer.TryGetValue(end.Type, out var buffer))
+                        if (!_commandToBuffer.TryGetValue(end.Type, out var bufferEnd))
                             throw new BeatmapperException(
                                 $"Attempted to close buffer of type {end.Type}; none is open",
                                 end.Line);
 
-                        foreach (var item in buffer.Instructions)
-                            item.BeatmapFromBuffer(buffer.StartInstruction.ActivateBeat, end.ActivateBeat);
+                        foreach (var item in bufferEnd.Instructions)
+                            item.BeatmapFromBuffer(bufferEnd.StartInstruction.ActivateBeat, end.ActivateBeat);
 
                         _commandToBuffer.Remove(end.Type);
                         break;

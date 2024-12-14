@@ -10,4 +10,12 @@ namespace BirdScript.Beatmapping
         {
         }
     }
+
+    [Serializable]
+    internal class MetadataException : ExceptionOnLine
+    {
+        public MetadataException(string message, int line) : base(message, line)
+        {
+        }
+    }
 }
