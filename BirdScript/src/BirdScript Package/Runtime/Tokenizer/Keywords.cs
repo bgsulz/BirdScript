@@ -30,6 +30,6 @@ namespace BirdScript.Tokenizing
         DesertNight,
         DesertStorm,
         SkyDay,
-        Space
+        SpaceSplit
     }
 }
