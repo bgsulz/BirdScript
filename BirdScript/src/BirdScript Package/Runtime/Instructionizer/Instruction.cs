@@ -3,6 +3,7 @@
 using System;
 using System.Linq;
 using BirdScript.Tokenizing;
+using Location = BirdScript.Tokenizing.Location;
 
 namespace BirdScript.Instructionizing
 {
@@ -194,4 +195,5 @@ namespace BirdScript.Instructionizing
 
     public record AuthorMetadata(string Author) : Metadata;
     public record TitleMetadata(string Title) : Metadata;
+    public record LocationMetadata(Location Location) : Metadata;
 }

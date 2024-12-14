@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using BirdScript.Errors;
 using BirdScript.Tokenizing;
+using Location = BirdScript.Tokenizing.Location;
 
 namespace BirdScript.Instructionizing
 {
@@ -27,6 +27,7 @@ namespace BirdScript.Instructionizing
             [Command.End] = EndCreator,
             [Command.By] = AuthorMetadataCreator,
             [Command.Title] = TitleMetadataCreator,
+            [Command.Location] = LocationMetadataCreator,
         };
 
         private static IInstruction BPMCreator(InfoToken<Command> head, List<IToken> arguments)
@@ -138,6 +139,13 @@ namespace BirdScript.Instructionizing
         {
             if (arguments.Match<string>(out var str))
                 return new TitleMetadata(str) { Line = head.Line };
+            throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction LocationMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            if (arguments.Match<Location>(out var loc))
+                return new LocationMetadata(loc) { Line = head.Line };
             throw new ParameterException(head, arguments);
         }
 

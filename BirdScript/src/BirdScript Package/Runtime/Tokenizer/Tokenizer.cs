@@ -93,8 +93,10 @@ namespace BirdScript.Tokenizing
             var value = _source[_brace.._scan];
             if (Enum.TryParse<Command>(value, true, out var command))
                 _tokens.Add(new InfoToken<Command>(TokenType.Command, _line, command));
-            else if (Enum.TryParse<RowColumn>(value, true, out var keyword))
-                _tokens.Add(new InfoToken<RowColumn>(TokenType.Keyword, _line, keyword));
+            else if (Enum.TryParse<RowColumn>(value, true, out var rowColumn))
+                _tokens.Add(new InfoToken<RowColumn>(TokenType.Keyword, _line, rowColumn));
+            else if (Enum.TryParse<Location>(value, true, out var location))
+                _tokens.Add(new InfoToken<Location>(TokenType.Keyword, _line, location));
             else
                 _tokens.Add(new InfoToken<string>(TokenType.Identifier, _line, value));
         }

@@ -15,12 +15,21 @@ namespace BirdScript.Tokenizing
         // Nectar: hold notes
 
         // Metadata
-        By, Title
+        By, Title, Location
     }
 
     public enum RowColumn
     {
         Row,
         Column
+    }
+
+    public enum Location
+    {
+        DesertDay,
+        DesertNight,
+        DesertStorm,
+        SkyDay,
+        Space
     }
 }
