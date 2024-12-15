@@ -193,7 +193,18 @@ namespace BirdScript.Instructionizing
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
 
-    public record AuthorMetadata(string Author) : Metadata;
-    public record TitleMetadata(string Title) : Metadata;
-    public record LocationMetadata(Location Location) : Metadata;
+    public record AuthorMetadata(string Author) : Metadata
+    {
+        public override string ToString() => $"Author: {Author}";
+    }
+
+    public record TitleMetadata(string Title) : Metadata
+    {
+        public override string ToString() => $"Title: {Title}";
+    }
+
+    public record LocationMetadata(Location Location) : Metadata
+    {
+        public override string ToString() => $"Location: {Location}";
+    }
 }

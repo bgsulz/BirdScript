@@ -19,10 +19,14 @@ var readingIsDone = stopwatch.ElapsedMilliseconds;
 
 var tokens = new Tokenizer(text).Tokenize();
 
+// foreach (var token in tokens) Console.WriteLine(token);
+
 var tokenizerIsDone = stopwatch.ElapsedMilliseconds;
 var tokenizerTime = tokenizerIsDone - readingIsDone;
 
 var instructions = new Instructionizer(tokens).Instructionize();
+
+// foreach (var instruction in instructions) Console.WriteLine(instruction);
 
 var instructionizerIsDone = stopwatch.ElapsedMilliseconds;
 var instructionizerTime = instructionizerIsDone - tokenizerIsDone;
