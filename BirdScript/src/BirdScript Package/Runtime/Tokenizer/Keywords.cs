@@ -9,7 +9,10 @@ namespace BirdScript.Tokenizing
         Start, End,
 
         // Items
-        Water, Rock, Bolt, Boulder, Gem, Ghost, Ball, Energy, Toxin, Nectar,
+        Water, Gem, Ghost, Ball, Nectar,
+        Rock, Bolt, Boulder, 
+        Skill,
+        Energy, Toxin,
         // Energy: totem good, bird bad
         // Toxin: swap controls
         // Nectar: hold notes

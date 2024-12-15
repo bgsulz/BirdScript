@@ -17,6 +17,7 @@ namespace BirdScript.Instructionizing
             [Command.Wait] = WaitCreator,
             [Command.Align] = AlignCreator,
             [Command.Water] = SimpleDropCreator,
+            [Command.Skill] = SimpleDropCreator,
             [Command.Rock] = SimpleDropCreator,
             [Command.Ghost] = SimpleDropCreator,
             [Command.Boulder] = SimpleDropCreator,
