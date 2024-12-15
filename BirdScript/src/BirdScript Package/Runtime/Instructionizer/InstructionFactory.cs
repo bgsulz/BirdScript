@@ -39,8 +39,14 @@ namespace BirdScript.Instructionizing
 
         private static IInstruction AlignCreator(InfoToken<Command> head, List<IToken> arguments)
         {
-            if (arguments.Match<float>(out var number))
-                return new AlignInstruction(number) { Line = head.Line };
+            if (arguments.Match<float>(out var time))
+                return new AlignInstruction(time) { Line = head.Line };
+            if (arguments.Match<float, float>(out var beatTime, out var beat))
+            {
+                var instr = new AlignInstruction(beatTime) { Line = head.Line };
+                instr.BeatmapFromActivation(beat);
+                return instr;
+            }
             throw new ParameterException(head, arguments);
         }
 

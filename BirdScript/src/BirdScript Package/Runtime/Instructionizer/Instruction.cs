@@ -47,6 +47,7 @@ namespace BirdScript.Instructionizing
 
         public virtual void BeatmapFromActivation(float beat)
         {
+            if (_hasProcessed) return;
             _hasProcessed = true;
             ActivateBeat = beat;
         }
