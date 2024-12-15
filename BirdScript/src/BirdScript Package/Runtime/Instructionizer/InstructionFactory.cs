@@ -22,7 +22,7 @@ namespace BirdScript.Instructionizing
             [Command.Ball] = BallCreator,
             [Command.Bolt] = BoltCreator,
             [Command.Gem] = GemCreator,
-            [Command.Jump] = JumpCreator,
+            [Command.Set] = SetCreator,
             [Command.Start] = StartCreator,
             [Command.End] = EndCreator,
             [Command.By] = AuthorMetadataCreator,
@@ -65,10 +65,10 @@ namespace BirdScript.Instructionizing
             throw new ParameterException(head, arguments);
         }
 
-        private static IInstruction JumpCreator(InfoToken<Command> head, List<IToken> arguments)
+        private static IInstruction SetCreator(InfoToken<Command> head, List<IToken> arguments)
         {
             if (arguments.Match<float>(out var number))
-                return new JumpInstruction(number) { Line = head.Line };
+                return new SetInstruction(number) { Line = head.Line };
             throw new ParameterException(head, arguments);
         }
 

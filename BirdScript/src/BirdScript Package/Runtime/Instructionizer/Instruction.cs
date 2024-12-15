@@ -29,9 +29,9 @@ namespace BirdScript.Instructionizing
 
     public abstract record Metadata : Instruction { }
 
-    public record JumpInstruction(float Beat) : Instruction
+    public record SetInstruction(float Beat) : Instruction
     {
-        public override string ToString() => $"Jump: {Beat}";
+        public override string ToString() => $"Set: {Beat}";
     }
 
     public abstract record TimedInstruction : Instruction, IComparable<TimedInstruction>

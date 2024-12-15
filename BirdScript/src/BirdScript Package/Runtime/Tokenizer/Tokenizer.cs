@@ -11,9 +11,9 @@ namespace BirdScript.Tokenizing
 
         private int _brace, _scan, _line;
         private readonly TokenList _tokens = new();
-        private readonly string _source;
+        private readonly ReadOnlyMemory<char> _source;
 
-        public Tokenizer(string source) => _source = source;
+        public Tokenizer(string source) => _source = source.AsMemory();
 
         public TokenList Tokenize()
         {
@@ -85,12 +85,14 @@ namespace BirdScript.Tokenizing
 
         private void GatherWord()
         {
+            var sourceSpan = _source.Span;
             for (var scanning = Peek(); !IsSeparator(scanning) && !IsTerminator(scanning); scanning = Peek())
             {
                 Advance();
             }
 
-            var value = _source[_brace.._scan];
+            var value = sourceSpan[_brace.._scan]; 
+
             if (Enum.TryParse<Command>(value, true, out var command))
                 _tokens.Add(new InfoToken<Command>(TokenType.Command, _line, command));
             else if (Enum.TryParse<RowColumn>(value, true, out var rowColumn))
@@ -98,11 +100,12 @@ namespace BirdScript.Tokenizing
             else if (Enum.TryParse<Location>(value, true, out var location))
                 _tokens.Add(new InfoToken<Location>(TokenType.Keyword, _line, location));
             else
-                _tokens.Add(new InfoToken<string>(TokenType.Identifier, _line, value));
+                _tokens.Add(new InfoToken<string>(TokenType.Identifier, _line, value.ToString()));
         }
 
         private void GatherExpression()
         {
+            var sourceSpan = _source.Span;
             var parenLevel = 0;
 
             for (var scanning = Peek(); IsExpression(scanning); scanning = Peek())
@@ -118,10 +121,9 @@ namespace BirdScript.Tokenizing
                 }
             }
 
-            var expression = _source[(_brace + 1)..(_scan - 1)];
+            var expression = sourceSpan.Slice(_brace + 1, _scan - _brace - 2);
 
-            // TODO: throw if fails. Returns type `object?` -- simple null check?
-            var value = table.Compute(expression, "");
+            var value = EvaluateExpression(expression);
 
             if (value is int i)
                 _tokens.Add(new InfoToken<float>(TokenType.Number, _line, i));
@@ -132,8 +134,16 @@ namespace BirdScript.Tokenizing
             // TODO: else throw
         }
 
+        private object EvaluateExpression(ReadOnlySpan<char> expression)
+        {
+            string expressionString = expression.ToString();
+            var result = table.Compute(expressionString, "");
+            return result;
+        }
+
         private void GatherNumber()
         {
+            var sourceSpan = _source.Span;
             var hasSeenDot = false;
 
             for (var scanning = Peek(); IsNumberParseable(scanning); scanning = Peek())
@@ -147,30 +157,21 @@ namespace BirdScript.Tokenizing
                 }
             }
 
-            var value = float.Parse(_source[_brace.._scan]);
+            // Use span slicing and float.Parse with the span
+            var value = float.Parse(sourceSpan[_brace.._scan]);
             _tokens.Add(new InfoToken<float>(TokenType.Number, _line, value));
         }
 
-        private char Advance()
-        {
-            return _source[_scan++];
-        }
-
-        private char Peek()
-        {
-            if (IsAtEnd())
-                return '\0';
-            return _source[_scan];
-        }
-
+        private char Advance() => _source.Span[_scan++];
+        private char Peek() => IsAtEnd() ? '\0' : _source.Span[_scan];
         private bool IsAtEnd() => _scan >= _source.Length;
 
-        private bool IsTerminator(char c) => c == ';' || c == '\n' || c == '\0';
-        private bool IsWhitespace(char c) => char.IsWhiteSpace(c);
-        private bool IsSeparator(char c) => IsWhitespace(c) || c == ',';
-        private bool IsExpression(char c) => IsNumberParseable(c) || IsMath(c);
-        private bool IsNumberParseable(char c) => char.IsNumber(c) || c == '.';
-        private bool IsMath(char c) => new char[] { '+', '-', '*', '/', '(', ')' }.Contains(c);
-        private bool IsLetter(char c) => char.IsLetter(c);
+        private static bool IsTerminator(char c) => c == ';' || c == '\n' || c == '\0';
+        private static bool IsWhitespace(char c) => char.IsWhiteSpace(c);
+        private static bool IsSeparator(char c) => IsWhitespace(c) || c == ',';
+        private static bool IsExpression(char c) => IsNumberParseable(c) || IsMath(c);
+        private static bool IsNumberParseable(char c) => char.IsNumber(c) || c == '.';
+        private static bool IsMath(char c) => new char[] { '+', '-', '*', '/', '(', ')' }.Contains(c);
+        private static bool IsLetter(char c) => char.IsLetter(c);
     }
 }

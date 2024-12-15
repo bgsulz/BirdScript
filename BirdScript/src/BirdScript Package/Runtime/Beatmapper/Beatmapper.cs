@@ -57,8 +57,8 @@ namespace BirdScript.Beatmapping
 
                             break;
                         }
-                    case JumpInstruction jump:
-                        _beat = jump.Beat;
+                    case SetInstruction set:
+                        _beat = set.Beat;
                         break;
                     default:
                         throw new BeatmapperException($"How did a {instruction.GetType()} get in here?", instruction.Line);
