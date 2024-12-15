@@ -91,7 +91,7 @@ namespace BirdScript.Tokenizing
                 Advance();
             }
 
-            var value = sourceSpan[_brace.._scan]; 
+            var value = sourceSpan[_brace.._scan].ToString(); 
 
             if (Enum.TryParse<Command>(value, true, out var command))
                 _tokens.Add(new InfoToken<Command>(TokenType.Command, _line, command));
