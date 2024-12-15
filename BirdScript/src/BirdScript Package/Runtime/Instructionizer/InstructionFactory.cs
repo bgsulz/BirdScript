@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using BirdScript.Errors;
 using BirdScript.Tokenizing;
 using Location = BirdScript.Tokenizing.Location;
@@ -25,8 +26,9 @@ namespace BirdScript.Instructionizing
             [Command.Set] = SetCreator,
             [Command.Start] = StartCreator,
             [Command.End] = EndCreator,
-            [Command.By] = AuthorMetadataCreator,
-            [Command.Title] = TitleMetadataCreator,
+            [Command.Debug] = DebugCreator,
+            [Command.By] = StringMetadataCreator,
+            [Command.Title] = StringMetadataCreator,
             [Command.Location] = LocationMetadataCreator,
         };
 
@@ -134,25 +136,23 @@ namespace BirdScript.Instructionizing
             throw new ParameterException(head, arguments);
         }
 
-        private static IInstruction AuthorMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
+        private static IInstruction StringMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
         {
             if (arguments.Match<string>(out var str))
-                return new AuthorMetadata(str) { Line = head.Line };
-            throw new ParameterException(head, arguments);
-        }
-
-        private static IInstruction TitleMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
-        {
-            if (arguments.Match<string>(out var str))
-                return new TitleMetadata(str) { Line = head.Line };
+                return new StringMetadata(str, head.Value) { Line = head.Line };
             throw new ParameterException(head, arguments);
         }
 
         private static IInstruction LocationMetadataCreator(InfoToken<Command> head, List<IToken> arguments)
         {
             if (arguments.Match<Location>(out var loc))
-                return new LocationMetadata(loc) { Line = head.Line };
+                return new LocationMetadata(loc, head.Value) { Line = head.Line };
             throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction DebugCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            return new DebugInstruction();
         }
 
         public static IInstruction Create(InfoToken<Command> head, IEnumerable<IToken> arguments)

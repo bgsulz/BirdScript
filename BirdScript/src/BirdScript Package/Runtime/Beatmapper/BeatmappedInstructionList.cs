@@ -16,30 +16,33 @@ namespace BirdScript.Beatmapping
             public Location Location { get; private set; } = Location.DesertDay;
             public float BPM { get; set; }
 
-            private Dictionary<Type, Instructionizing.Metadata> _metadataCache = new();
+            private Dictionary<Command, Instructionizing.Metadata> _metadataCache = new();
 
             public void Add(Instructionizing.Metadata data)
             {
+                if (AlreadyContains(data)) return;
                 switch (data)
                 {
-                    case TitleMetadata title:
-                        if (AlreadyContains(title)) break;
-                        Title = title.Title; break;
-                    case AuthorMetadata byline:
-                        if (AlreadyContains(byline)) break;
-                        Author = byline.Author; break;
-                    case LocationMetadata location:
-                        if (AlreadyContains(location)) break;
-                        Location = location.Location; break;
+                    case Metadata<string> str:
+                        switch (str.Type)
+                        {
+                            case Command.Title:
+                                Title = str.Value; break;
+                            case Command.By:
+                                Author = str.Value; break;
+                        }
+                        break;
+                    case Metadata<Location> loc:
+                        Location = loc.Value; break;
                 }
             }
 
-            private bool AlreadyContains<T>(T data) where T : Instructionizing.Metadata
+            private bool AlreadyContains(Instructionizing.Metadata data)
             {
-                var type = typeof(T);
+                var type = data.Type;
                 if (_metadataCache.TryGetValue(type, out var existingData))
                     throw new MetadataException(
-                        $"Duplicate metadata of type {type.Name}; existing on line {existingData.Line}", 
+                        $"Duplicate metadata of type {type}; existing on line {existingData.Line}", 
                         data.Line
                     );
                 _metadataCache.Add(type, data);

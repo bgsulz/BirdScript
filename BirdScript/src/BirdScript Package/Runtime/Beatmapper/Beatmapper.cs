@@ -43,9 +43,15 @@ namespace BirdScript.Beatmapping
                     case Metadata data:
                         _processed.Data.Add(data);
                         break;
+                    case DebugInstruction debug:
+                        {
+                            // TODO: Best way to implement this?
+                            break;
+                        }
                     case TimedInstruction timed:
                         {
-                            timed.BeatmapFromActivation(_beat);
+                            if (!timed.HasProcessed)
+                                timed.BeatmapFromActivation(_beat);
 
                             if (timed is WaitInstruction wait)
                                 _beat += wait.Duration;

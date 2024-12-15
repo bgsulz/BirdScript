@@ -27,8 +27,6 @@ namespace BirdScript.Instructionizing
         public int Line { get; init; } = -1;
     }
 
-    public abstract record Metadata : Instruction { }
-
     public record SetInstruction(float Beat) : Instruction
     {
         public override string ToString() => $"Set: {Beat}";
@@ -36,7 +34,7 @@ namespace BirdScript.Instructionizing
 
     public abstract record TimedInstruction : Instruction, IComparable<TimedInstruction>
     {
-        protected bool _hasProcessed = false;
+        public bool HasProcessed { get; protected set; } = false;
 
         public float ActivateBeat { get; set; }
         protected virtual int Priority { get; } = 0;
@@ -47,8 +45,7 @@ namespace BirdScript.Instructionizing
 
         public virtual void BeatmapFromActivation(float beat)
         {
-            if (_hasProcessed) return;
-            _hasProcessed = true;
+            HasProcessed = true;
             ActivateBeat = beat;
         }
 
@@ -125,6 +122,8 @@ namespace BirdScript.Instructionizing
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
 
+    public record DebugInstruction : Instruction { }
+
     public abstract record ItemInstruction(Command Type) : TimedInstruction, ICommandInstruction
     {
         public float DropBeat { get; set; }
@@ -161,12 +160,6 @@ namespace BirdScript.Instructionizing
 
     public record GemInstruction(int X, int Y) : DropInstruction(Command.Gem, X, Y), ICommandInstruction, IBufferableInstruction
     {
-        public override void BeatmapFromActivation(float beat)
-        {
-            _hasProcessed = true;
-            ActivateBeat = beat; // Cue appears
-        }
-
         public void BeatmapFromBuffer(float start, float end)
         {
             LandBeat = end + (ActivateBeat - start);
@@ -194,18 +187,20 @@ namespace BirdScript.Instructionizing
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
 
-    public record AuthorMetadata(string Author) : Metadata
+    public abstract record Metadata(Command Type) : Instruction { }
+
+    public abstract record Metadata<T>(T Value, Command Type) : Metadata(Type)
     {
-        public override string ToString() => $"Author: {Author}";
+        public override string ToString() => $"${Type}: {Value}";
     }
 
-    public record TitleMetadata(string Title) : Metadata
+    public record StringMetadata : Metadata<string>
     {
-        public override string ToString() => $"Title: {Title}";
+        public StringMetadata(string Value, Command Type) : base(Value, Type) { }
     }
 
-    public record LocationMetadata(Location Location) : Metadata
+    public record LocationMetadata : Metadata<Location>
     {
-        public override string ToString() => $"Location: {Location}";
+        public LocationMetadata(Location Value, Command Type) : base(Value, Type) { }
     }
 }
