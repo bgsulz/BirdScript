@@ -122,7 +122,10 @@ namespace BirdScript.Instructionizing
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
 
-    public record DebugInstruction : Instruction { }
+    public record DebugInstruction : TimedInstruction
+    {
+        protected override string InfoString() => "Debug";
+    }
 
     public abstract record ItemInstruction(Command Type) : TimedInstruction, ICommandInstruction
     {
