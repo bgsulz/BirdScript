@@ -163,6 +163,13 @@ namespace BirdScript.Instructionizing
 
     public record GemInstruction(int X, int Y) : DropInstruction(Command.Gem, X, Y), ICommandInstruction, IBufferableInstruction
     {
+        // This is not redundant: as gems are bufferable, they activate on beat, not beat - 2!
+        public override void BeatmapFromActivation(float beat)
+        {
+            HasProcessed = true;
+            ActivateBeat = beat;
+        }
+
         public void BeatmapFromBuffer(float start, float end)
         {
             LandBeat = end + (ActivateBeat - start);

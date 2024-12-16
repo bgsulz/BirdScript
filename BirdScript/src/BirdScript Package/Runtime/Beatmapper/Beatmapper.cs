@@ -80,22 +80,22 @@ namespace BirdScript.Beatmapping
                 switch (instruction)
                 {
                     case StartInstruction start:
-                        if (_commandToBuffer.TryGetValue(start.Type, out var bufferStart))
+                        if (_commandToBuffer.TryGetValue(start.Type, out var existingBuffer))
                             throw new BeatmapperException(
                                 $"Attemped to open buffer of type {start.Type}; "
-                                + $"one is already open from line {bufferStart.StartInstruction.Line}",
+                                + $"one is already open from line {existingBuffer.StartInstruction.Line}",
                                 start.Line);
 
                         _commandToBuffer[start.Type] = new(start);
                         break;
                     case EndInstruction end:
-                        if (!_commandToBuffer.TryGetValue(end.Type, out var bufferEnd))
+                        if (!_commandToBuffer.TryGetValue(end.Type, out var buffer))
                             throw new BeatmapperException(
                                 $"Attempted to close buffer of type {end.Type}; none is open",
                                 end.Line);
 
-                        foreach (var item in bufferEnd.Instructions)
-                            item.BeatmapFromBuffer(bufferEnd.StartInstruction.ActivateBeat, end.ActivateBeat);
+                        foreach (var item in buffer.Instructions)
+                            item.BeatmapFromBuffer(buffer.StartInstruction.ActivateBeat, end.ActivateBeat);
 
                         _commandToBuffer.Remove(end.Type);
                         break;
