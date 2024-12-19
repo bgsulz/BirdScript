@@ -14,7 +14,7 @@ namespace BirdScript.Beatmapping
 
         private float _beat;
         private readonly InstructionList _source;
-        private readonly BeatmappedInstructionList _processed = new();
+        private readonly Beatmap _processed = new();
 
         private readonly Dictionary<Command, Buffer> _commandToBuffer = new();
 
@@ -23,7 +23,7 @@ namespace BirdScript.Beatmapping
             _source = source;
         }
 
-        public BeatmappedInstructionList Beatmap()
+        public Beatmap Beatmap()
         {
             AssignActivateBeats();
             AssignBufferBeats();
@@ -50,6 +50,8 @@ namespace BirdScript.Beatmapping
 
                             if (timed is WaitInstruction wait)
                                 _beat += wait.Duration;
+                            else if (timed is MarkerInstruction marker)
+                                _processed.Chapters.Add(new(marker.Name, _beat));
                             else
                             {
                                 int insertIndex = _processed.BinarySearch(timed);

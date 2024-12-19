@@ -3,7 +3,7 @@ namespace BirdScript.Tokenizing
     public enum Command
     {
         // Timing
-        Wait, Set, BPM, Align, Stop,
+        Wait, Set, BPM, Align, Marker, Stop,
 
         // Buffers
         Start, End,

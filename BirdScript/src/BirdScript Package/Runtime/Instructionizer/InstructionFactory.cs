@@ -16,6 +16,7 @@ namespace BirdScript.Instructionizing
             [Command.BPM] = BPMCreator,
             [Command.Wait] = WaitCreator,
             [Command.Align] = AlignCreator,
+            [Command.Marker] = MarkerCreator,
             [Command.Stop] = StopCreator,
             [Command.Water] = SimpleDropCreator,
             [Command.Skill] = SimpleDropCreator,
@@ -51,6 +52,13 @@ namespace BirdScript.Instructionizing
                 instr.BeatmapFromActivation(beat);
                 return instr;
             }
+            throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction MarkerCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            if (arguments.Match<string>(out var name))
+                return new MarkerInstruction(name) { Line = head.Line };
             throw new ParameterException(head, arguments);
         }
 

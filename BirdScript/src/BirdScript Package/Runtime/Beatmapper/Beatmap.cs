@@ -1,13 +1,13 @@
-using System;
 using System.Collections.Generic;
 using BirdScript.Instructionizing;
 using BirdScript.Tokenizing;
 
 namespace BirdScript.Beatmapping
 {
-    public class BeatmappedInstructionList : List<TimedInstruction>
+    public class Beatmap : List<TimedInstruction>
     {
         public Metadata Data { get; set; } = new();
+        public List<Marker> Chapters { get; } = new();
 
         public class Metadata
         {
@@ -42,7 +42,7 @@ namespace BirdScript.Beatmapping
                 var type = data.Type;
                 if (_metadataCache.TryGetValue(type, out var existingData))
                     throw new MetadataException(
-                        $"Duplicate metadata of type {type}; existing on line {existingData.Line}", 
+                        $"Duplicate metadata of type {type}; existing on line {existingData.Line}",
                         data.Line
                     );
                 _metadataCache.Add(type, data);
@@ -51,5 +51,7 @@ namespace BirdScript.Beatmapping
 
             public void ClearCache() => _metadataCache.Clear();
         }
+
+        public record Marker(string Name, float Beat);
     }
 }

@@ -6,7 +6,7 @@ namespace BirdScript.Pipeline
 {
     public static class Pipeline
     {
-        public static BeatmappedInstructionList Compile(string source)
+        public static Beatmap Compile(string source)
         {
             var t = new Tokenizer(source).Tokenize();
             var i = new Instructionizer(t).Instructionize();
