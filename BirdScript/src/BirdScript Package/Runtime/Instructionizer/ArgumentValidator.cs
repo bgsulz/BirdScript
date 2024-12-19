@@ -9,24 +9,33 @@ namespace BirdScript.Instructionizing
 {
     public static class ArgumentValidator
     {
-        public static bool Match<T0>(this List<IToken> self, out T0 res0)
+        public static bool Match(this List<IToken> self, bool strictCount = true)
+        {
+            if (strictCount && self.Count != 0) return false;
+            return true;
+        }
+
+        public static bool Match<T0>(this List<IToken> self, out T0 res0, bool strictCount = true)
         {
             res0 = default;
+            if (strictCount && self.Count != 1) return false;
             if (!self[0].TryConvert(out res0)) return false;
             return true;
         }
 
-        public static bool Match<T0, T1>(this List<IToken> self, out T0 res0, out T1 res1)
+        public static bool Match<T0, T1>(this List<IToken> self, out T0 res0, out T1 res1, bool strictCount = true)
         {
             res0 = default; res1 = default;
+            if (strictCount && self.Count != 2) return false;
             if (!self[0].TryConvert(out res0)) return false;
             if (!self[1].TryConvert(out res1)) return false;
             return true;
         }
 
-        public static bool Match<T0, T1, T2>(this List<IToken> self, out T0 res0, out T1 res1, out T2 res2)
+        public static bool Match<T0, T1, T2>(this List<IToken> self, out T0 res0, out T1 res1, out T2 res2, bool strictCount = true)
         {
             res0 = default; res1 = default; res2 = default;
+            if (strictCount && self.Count != 3) return false;
             if (!self[0].TryConvert(out res0)) return false;
             if (!self[1].TryConvert(out res1)) return false;
             if (!self[2].TryConvert(out res2)) return false;

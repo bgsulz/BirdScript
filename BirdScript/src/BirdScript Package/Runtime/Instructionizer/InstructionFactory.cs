@@ -16,6 +16,7 @@ namespace BirdScript.Instructionizing
             [Command.BPM] = BPMCreator,
             [Command.Wait] = WaitCreator,
             [Command.Align] = AlignCreator,
+            [Command.Stop] = StopCreator,
             [Command.Water] = SimpleDropCreator,
             [Command.Skill] = SimpleDropCreator,
             [Command.Rock] = SimpleDropCreator,
@@ -50,6 +51,13 @@ namespace BirdScript.Instructionizing
                 instr.BeatmapFromActivation(beat);
                 return instr;
             }
+            throw new ParameterException(head, arguments);
+        }
+
+        private static IInstruction StopCreator(InfoToken<Command> head, List<IToken> arguments)
+        {
+            if (arguments.Match())
+                return new EndOfChartInstruction(ShouldEndEarly: true);
             throw new ParameterException(head, arguments);
         }
 
@@ -152,9 +160,7 @@ namespace BirdScript.Instructionizing
         }
 
         private static IInstruction DebugCreator(InfoToken<Command> head, List<IToken> arguments)
-        {
-            return new DebugInstruction();
-        }
+            => new DebugInstruction();
 
         public static IInstruction Create(InfoToken<Command> head, IEnumerable<IToken> arguments)
             => commandToCreator[head.Value].Invoke(head, arguments.ToList());

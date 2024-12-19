@@ -81,7 +81,7 @@ namespace BirdScript.Instructionizing
         public override string ToString() => TimedString(InfoString(), TimingString());
     }
 
-    public record EndOfChartInstruction : TimedInstruction
+    public record EndOfChartInstruction(bool ShouldEndEarly = false) : TimedInstruction
     {
         protected override int Priority => 3;
 
