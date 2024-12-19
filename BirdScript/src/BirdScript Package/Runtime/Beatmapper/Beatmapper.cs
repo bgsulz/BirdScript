@@ -51,7 +51,7 @@ namespace BirdScript.Beatmapping
                             if (timed is WaitInstruction wait)
                                 _beat += wait.Duration;
                             else if (timed is MarkerInstruction marker)
-                                _processed.Chapters.Add(new(marker.Name, _beat));
+                                _processed.Markers.Add(new(marker.Name, _beat));
                             else
                             {
                                 int insertIndex = _processed.BinarySearch(timed);

@@ -7,7 +7,7 @@ namespace BirdScript.Beatmapping
     public class Beatmap : List<TimedInstruction>
     {
         public Metadata Data { get; set; } = new();
-        public List<Marker> Chapters { get; } = new();
+        public List<Marker> Markers { get; } = new();
 
         public class Metadata
         {
