@@ -19,7 +19,7 @@ namespace BirdScript.Instructionizing
 
     public interface IBufferableInstruction
     {
-        void BeatmapFromBuffer(float start, float end);
+        IBufferableInstruction BeatmapFromBuffer(float start, float end);
     }
 
     public abstract record Instruction() : IInstruction
@@ -43,10 +43,11 @@ namespace BirdScript.Instructionizing
         // This is false for e.g. beach ball, which resolves on each bounce.
         public virtual bool IsFinalResolution => true;
 
-        public virtual void BeatmapFromActivation(float beat)
+        public virtual TimedInstruction BeatmapFromActivation(float beat)
         {
             HasProcessed = true;
             ActivateBeat = beat;
+            return this;
         }
 
         protected abstract string InfoString();
@@ -116,10 +117,11 @@ namespace BirdScript.Instructionizing
 
         public float EndBeat { get; set; }
 
-        public override void BeatmapFromActivation(float beat)
+        public override TimedInstruction BeatmapFromActivation(float beat)
         {
             base.BeatmapFromActivation(beat);
             EndBeat = beat + Duration;
+            return this;
         }
 
         protected override string InfoString() => $"Wait: {Duration}";
@@ -140,11 +142,12 @@ namespace BirdScript.Instructionizing
 
     public record DropInstruction(Command Type, int X, int Y) : ItemInstruction(Type), ICommandInstruction
     {
-        public override void BeatmapFromActivation(float beat)
+        public override TimedInstruction BeatmapFromActivation(float beat)
         {
             base.BeatmapFromActivation(beat - 2); // Cue appears
             DropBeat = beat - 1;
             LandBeat = beat;
+            return this;
         }
 
         protected override string InfoString() => $"{Type}: {X}, {Y}";
@@ -154,11 +157,12 @@ namespace BirdScript.Instructionizing
 
     public record BoltInstruction(RowColumn RowColumn, int Coord) : ItemInstruction(Command.Bolt), ICommandInstruction
     {
-        public override void BeatmapFromActivation(float beat)
+        public override TimedInstruction BeatmapFromActivation(float beat)
         {
             base.BeatmapFromActivation(beat - 2); // Cue appears
             DropBeat = beat - 1;
             LandBeat = beat;
+            return this;
         }
 
         protected override string InfoString() => $"{Type}: {RowColumn} {Coord}";
@@ -169,16 +173,18 @@ namespace BirdScript.Instructionizing
     public record GemInstruction(int X, int Y) : DropInstruction(Command.Gem, X, Y), ICommandInstruction, IBufferableInstruction
     {
         // This is not redundant: as gems are bufferable, they activate on beat, not beat - 2!
-        public override void BeatmapFromActivation(float beat)
+        public override TimedInstruction BeatmapFromActivation(float beat)
         {
             HasProcessed = true;
             ActivateBeat = beat;
+            return this;
         }
 
-        public void BeatmapFromBuffer(float start, float end)
+        public IBufferableInstruction BeatmapFromBuffer(float start, float end)
         {
             LandBeat = end + (ActivateBeat - start);
             DropBeat = LandBeat - 1;
+            return this;
         }
 
         public override string ToString() => TimedString(InfoString(), TimingString());
@@ -190,11 +196,12 @@ namespace BirdScript.Instructionizing
         public (int X, int Y) Position => CoordsList[Math.Min(CoordsList.Length - 1, Index)];
         public bool HasBurst => Index >= CoordsList.Length;
 
-        public override void BeatmapFromActivation(float beat)
+        public override TimedInstruction BeatmapFromActivation(float beat)
         {
             base.BeatmapFromActivation(beat - 2);
             DropBeat = beat - 1;
             LandBeat = beat;
+            return this;
         }
 
         protected override string InfoString() => $"{Type}: {string.Join("; ", CoordsList.Select(p => $"{p.X}, {p.Y}"))}";
